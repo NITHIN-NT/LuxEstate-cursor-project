@@ -10,22 +10,22 @@ import {
     CartesianGrid,
 } from "recharts";
 
-const data = [
-    { name: "Mon", properties: 4, label: "Monday" },
-    { name: "Tue", properties: 7, label: "Tuesday" },
-    { name: "Wed", properties: 5, label: "Wednesday" },
-    { name: "Thu", properties: 12, label: "Thursday" },
-    { name: "Fri", properties: 15, label: "Friday" },
-    { name: "Sat", properties: 10, label: "Saturday" },
-    { name: "Sun", properties: 8, label: "Sunday" },
-];
+interface ChartDataItem {
+    name: string;
+    enquiries: number;
+    label: string;
+}
 
-export default function DashboardCharts() {
+interface DashboardChartsProps {
+    data: ChartDataItem[];
+}
+
+export default function DashboardCharts({ data }: DashboardChartsProps) {
     return (
         <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <defs>
-                    <linearGradient id="colorProperties" x1="0" y1="0" x2="0" y2="1">
+                    <linearGradient id="colorEnquiries" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.2} />
                         <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
                     </linearGradient>
@@ -45,6 +45,7 @@ export default function DashboardCharts() {
                     axisLine={false}
                     tickLine={false}
                     tick={{ fill: "#94a3b8", fontSize: 12 }}
+                    allowDecimals={false}
                 />
 
                 <Tooltip
@@ -56,7 +57,7 @@ export default function DashboardCharts() {
                                         {payload[0].payload.label}
                                     </p>
                                     <p className="text-lg font-bold text-slate-900">
-                                        {payload[0].value} <span className="text-sm font-medium text-slate-500">views</span>
+                                        {payload[0].value} <span className="text-sm font-medium text-slate-500">enquiries</span>
                                     </p>
                                 </div>
                             );
@@ -67,11 +68,11 @@ export default function DashboardCharts() {
 
                 <Area
                     type="monotone"
-                    dataKey="properties"
+                    dataKey="enquiries"
                     stroke="#3b82f6"
                     strokeWidth={2}
                     fillOpacity={1}
-                    fill="url(#colorProperties)"
+                    fill="url(#colorEnquiries)"
                     activeDot={{ r: 4, fill: "#3b82f6", stroke: "#ffffff", strokeWidth: 2 }}
                 />
             </AreaChart>
