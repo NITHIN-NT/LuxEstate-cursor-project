@@ -1,0 +1,129 @@
+@import "tailwindcss";
+
+@theme {
+  /* LuxEstate Custom Theme */
+  --color-primary-50: #eef0f7;
+  --color-primary-100: #dce1ee;
+  --color-primary-200: #bec8de;
+  --color-primary-300: #94a5c8;
+  --color-primary-400: #657ead;
+  --color-primary-500: #466092;
+  --color-primary-600: #344b78;
+  --color-primary-700: #2b3d62;
+  --color-primary-800: #222052;
+  --color-primary-900: #222d46;
+
+  --color-secondary-400: #d2b68a;
+  --color-secondary-500: #c49a68;
+  --color-secondary-600: #b88252;
+
+  --color-neutral-800: #262626;
+  --color-neutral-900: #0a0a0a;
+
+  --font-heading: var(--font-heading-name), serif;
+  --font-body: var(--font-body-name), sans-serif;
+
+  --radius-small: 8px;
+  --radius-large: 16px;
+
+  --shadow-custom: 0px 20px 60px -10px rgba(0, 0, 0, 0.4);
+}
+
+:root {
+  --background: #0a0a0a;
+  --foreground: #ffffff;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-body-name), sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Base Styles */
+* {
+  border-color: var(--color-neutral-800);
+}
+
+/* Custom Utilities */
+.glass-effect {
+  background: rgba(10, 10, 10, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, #d2b68a 0%, #c49a68 50%, #b88252 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.perspective-container {
+  perspective: 1200px;
+}
+
+/* Animations */
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient 15s ease infinite;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0a0a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #d2b68a;
+}
+
+/* Mesh Gradient utility */
+.mesh-gradient {
+  background-color: #0a0a0a;
+  background-image:
+    radial-gradient(at 0% 0%, hsla(36, 44%, 68%, 0.1) 0, transparent 50%),
+    radial-gradient(at 100% 0%, hsla(240, 31%, 15%, 0.15) 0, transparent 50%);
+}
