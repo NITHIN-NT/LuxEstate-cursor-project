@@ -3,9 +3,13 @@
 import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import PropertyCard from "./PropertyCard";
-import { properties } from "@/data/properties";
+import { PropertyWithRelations } from "@/lib/properties";
 
-export default function PropertyGallery() {
+interface PropertyGalleryProps {
+    properties: PropertyWithRelations[];
+}
+
+export default function PropertyGallery({ properties }: PropertyGalleryProps) {
     const [width, setWidth] = useState(0);
     const carousel = useRef<HTMLDivElement>(null);
 
@@ -15,7 +19,7 @@ export default function PropertyGallery() {
         }
     }, []);
 
-    // Only show featured properties in the gallery
+    // Only show active and featured properties in the gallery
     const featuredProperties = properties.filter(p => p.tag === "Featured" || p.tag === "New" || p.tag === "Hot" || p.tag === "Luxury").slice(0, 4);
 
     return (

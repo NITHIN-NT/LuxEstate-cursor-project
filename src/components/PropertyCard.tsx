@@ -7,19 +7,19 @@ import Image from "next/image";
 
 interface PropertyCardProps {
     id: string;
-    image: string;
+    mainImage: string;
     title: string;
     price: string;
     location: string;
-    beds: string;
-    baths: string;
+    beds: number | string;
+    baths: number | string;
     size: string;
-    tag: string;
-    tagColor?: "primary" | "secondary";
+    tag: string | null;
+    tagColor?: "primary" | "secondary" | string | null;
 }
 
 export default function PropertyCard({
-    id, image, title, price, location, beds, baths, size, tag, tagColor = "secondary"
+    id, mainImage, title, price, location, beds, baths, size, tag, tagColor = "secondary"
 }: PropertyCardProps) {
     const gradient = tagColor === "secondary" ? "from-secondary-400 to-secondary-600" : "from-primary-600 to-primary-800";
     const textColor = tagColor === "secondary" ? "text-neutral-900" : "text-white";
@@ -49,7 +49,7 @@ export default function PropertyCard({
                         </motion.button>
                     </div>
                     <Image
-                        src={image}
+                        src={mainImage}
                         alt={title}
                         fill
                         className="object-cover transform group-hover:scale-110 transition-transform duration-700"
