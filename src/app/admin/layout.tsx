@@ -1,31 +1,50 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { SessionProvider, useSession, signOut } from "next-auth/react";
 import {
     LayoutDashboard,
     Building2,
     MessageSquare,
     Menu,
     X,
-    House
+    House,
+    Settings,
+    LogOut,
+    Users,
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
-export default function AdminLayout({
-    children,
-}: {
-    children: React.ReactNode;
-}) {
+function AdminSidebar({ children }: { children: React.ReactNode }) {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const pathname = usePathname();
+    const router = useRouter();
+    const { data: session } = useSession();
+    const isSuperuser = (session?.user as { role?: string })?.role === "superuser";
+
+    // Don't show sidebar on login/forgot-password pages
+    const isAuthPage = pathname.startsWith("/admin/login") || pathname.startsWith("/admin/forgot-password");
+    if (isAuthPage) return <>{children}</>;
 
     const menuItems = [
         { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
         { name: "Properties", href: "/admin/properties", icon: Building2 },
         { name: "Enquiries", href: "/admin/enquiries", icon: MessageSquare },
+        ...(isSuperuser ? [{ name: "Staff", href: "/admin/settings", icon: Users }] : []),
+        { name: "Settings", href: "/admin/settings", icon: Settings },
     ];
+
+    // De-duplicate settings for superuser (Staff links to settings page)
+    const uniqueItems = menuItems.filter((item, index, self) =>
+        index === self.findIndex((t) => t.href === item.href)
+    );
+
+    const handleLogout = async () => {
+        await signOut({ redirect: false });
+        router.push("/admin/login");
+    };
 
     return (
         <div className="min-h-[100dvh] bg-slate-50 flex flex-col lg:flex-row">
@@ -55,10 +74,11 @@ export default function AdminLayout({
                 </div>
 
                 <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
-                    {menuItems.map((item) => (
+                    {uniqueItems.map((item) => (
                         <Link
                             key={item.name}
                             href={item.href}
+                            onClick={() => setIsSidebarOpen(false)}
                             className={cn(
                                 "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors",
                                 pathname.startsWith(item.href)
@@ -71,6 +91,28 @@ export default function AdminLayout({
                         </Link>
                     ))}
                 </nav>
+
+                {/* User + Logout */}
+                <div className="px-4 py-4 border-t border-slate-100">
+                    {session?.user && (
+                        <div className="flex items-center gap-3 px-3 py-2 mb-2">
+                            <div className="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center text-xs font-bold text-slate-600">
+                                {session.user.name?.charAt(0).toUpperCase() || "A"}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <p className="text-sm font-medium text-slate-900 truncate">{session.user.name}</p>
+                                <p className="text-xs text-slate-500 truncate">{(session.user as { role?: string })?.role}</p>
+                            </div>
+                        </div>
+                    )}
+                    <button
+                        onClick={handleLogout}
+                        className="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium text-red-600 hover:bg-red-50 w-full transition-colors"
+                    >
+                        <LogOut className="w-5 h-5" />
+                        Sign Out
+                    </button>
+                </div>
             </aside>
 
             {/* Backdrop for mobile */}
@@ -86,5 +128,17 @@ export default function AdminLayout({
                 {children}
             </main>
         </div>
+    );
+}
+
+export default function AdminLayout({
+    children,
+}: {
+    children: React.ReactNode;
+}) {
+    return (
+        <SessionProvider>
+            <AdminSidebar>{children}</AdminSidebar>
+        </SessionProvider>
     );
 }

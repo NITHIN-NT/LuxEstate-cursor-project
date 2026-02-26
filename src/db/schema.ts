@@ -1,6 +1,25 @@
 import { pgTable, text, timestamp, uuid, integer, decimal, boolean } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
+// Admin Users Table
+export const admins = pgTable("admins", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    name: text("name").notNull(),
+    email: text("email").notNull().unique(),
+    password: text("password").notNull(),
+    role: text("role").notNull().default("staff"), // 'superuser' | 'staff'
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// OTP Codes for Forgot Password
+export const otpCodes = pgTable("otp_codes", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    email: text("email").notNull(),
+    code: text("code").notNull(),
+    expiresAt: timestamp("expires_at").notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 // Normalized Property Table
 export const properties = pgTable("properties", {
     id: uuid("id").primaryKey().defaultRandom(),
